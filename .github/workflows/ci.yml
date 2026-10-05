@@ -1,0 +1,61 @@
+name: Cars Dealership CI
+on:
+  push:
+    paths-ignore: ['evidence/**', '**/*.md']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Install React dependencies
+        working-directory: server/frontend
+        run: npm ci
+      - name: Build React frontend
+        working-directory: server/frontend
+        run: npm run build
+      - name: Check Django and migrations
+        run: |
+          python server/manage.py check
+          python server/manage.py makemigrations --check --dry-run
+      - name: Test authentication, CSRF, dealers, cars and reviews
+        run: python server/manage.py test djangoapp --verbosity 2
+      - name: Install and check Node microservice
+        working-directory: services/dealers
+        run: |
+          npm ci
+          npm run check
+      - name: Build and start container stack
+        env:
+          SERVICE_TOKEN: ci-only-service-token-no-production-access
+        run: docker compose up --build -d --wait --wait-timeout 180
+      - name: Verify Django with MongoDB and Flask services
+        run: |
+          curl --retry 10 --retry-delay 3 --retry-connrefused --fail http://localhost:8000/health
+          curl --fail http://localhost:8000/djangoapp/get_dealers/Kansas
+          curl --fail http://localhost:8000/djangoapp/reviews/dealer/1
+          curl --fail http://localhost:8000/djangoapp/analyze/Fantastic%20services
+      - name: Collect container logs
+        if: always()
+        env:
+          SERVICE_TOKEN: ci-only-service-token-no-production-access
+        run: docker compose logs --no-color
+      - name: Stop containers
+        if: always()
+        env:
+          SERVICE_TOKEN: ci-only-service-token-no-production-access
+        run: docker compose down

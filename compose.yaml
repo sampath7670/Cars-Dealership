@@ -1,0 +1,41 @@
+services:
+  web:
+    build: .
+    ports: ['8000:8000']
+    environment:
+      DJANGO_DEBUG: '1'
+      DATABASE_PATH: /data/db.sqlite3
+      DEALER_SERVICE_URL: http://dealers:3030
+      SENTIMENT_URL: http://sentiment:5000
+      SERVICE_TOKEN: ${SERVICE_TOKEN:?Set SERVICE_TOKEN in .env}
+    volumes: [django-data:/data]
+    depends_on:
+      dealers: {condition: service_healthy}
+      sentiment: {condition: service_healthy}
+  dealers:
+    build: {context: ., dockerfile: services/dealers/Dockerfile}
+    environment:
+      MONGO_URL: mongodb://mongo:27017
+      SERVICE_TOKEN: ${SERVICE_TOKEN:?Set SERVICE_TOKEN in .env}
+    depends_on:
+      mongo: {condition: service_healthy}
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://localhost:3030/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      retries: 10
+  sentiment:
+    build: {context: ., dockerfile: services/sentiment/Dockerfile}
+    healthcheck:
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 10s
+      retries: 10
+  mongo:
+    image: mongo:7
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.adminCommand("ping").ok']
+      interval: 10s
+      retries: 10
+volumes:
+  django-data:
+  mongo-data:
