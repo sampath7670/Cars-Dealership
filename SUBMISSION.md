@@ -29,7 +29,7 @@ Copy the contents of each named file from `evidence/` into the corresponding ans
 | 14 and 15 | `getallcarmakes` |
 | 16 | `analyzereview` |
 
-The login transcript uses a local-only demo account. It is not a production credential and the account database is excluded from GitHub. CSRF tokens in the transcript belong to the local session and expire; obtain fresh tokens when reproducing requests.
+The login transcript uses a local-only demo account. Passwords, CSRF tokens, and CI service-token values are redacted from public transcripts; HTTP responses are unchanged. The original login/logout transcripts are delivered separately in the local private evidence package. The account database is excluded from GitHub. Obtain fresh CSRF tokens when reproducing requests.
 
 ## Screenshots
 
@@ -43,7 +43,7 @@ Local screenshots are saved as JPEG files in `evidence/`: `admin_login`, `admin_
 
 ## CI and deployment
 
-- Task 23: `evidence/CICD` must contain a real successful GitHub Actions run. `CICD` is the filename used in the attached assignment; `CI/CD` cannot be a single portable filename because `/` separates directories.
-- Tasks 24–28: pending an actual hosting account and verified deployment. Do not submit localhost or GitHub source URLs as the deployment URL. See `DEPLOYMENT.md`.
+- Task 23: `evidence/CICD` contains logs downloaded from an actual successful GitHub Actions run, including executed steps and the run URL. `CICD` is the filename used in the attached assignment; `CI/CD` cannot be a single portable filename because `/` separates directories.
+- Tasks 24–28: Render is selected and `render.yaml` is prepared; installing/connecting Render and verifying the deployment are still pending. Do not submit localhost or GitHub source URLs as the deployment URL. See `DEPLOYMENT.md`.
 
 This checklist does not claim all 28 tasks are complete: address-bar screenshots and live deployment evidence require the actions above.

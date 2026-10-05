@@ -2,6 +2,14 @@
 
 No live deployment URL is claimed until an actual hosting account is selected and a successful deployment is verified. A GitHub repository URL, localhost URL, or static frontend preview does not satisfy Tasks 24–28.
 
+## Selected demonstration host: Render
+
+`render.yaml` defines a free Docker web service and free PostgreSQL database. Install/connect Render or sign in at https://dashboard.render.com, create a Blueprint from this repository, and review the two Free plans before deploying. The root Dockerfile builds React and serves it through Django/Gunicorn/WhiteNoise. `DATABASE_URL` selects PostgreSQL, and `RENDER_EXTERNAL_HOSTNAME` configures Django's allowed host and trusted HTTPS origin automatically.
+
+This economical deployment runs sentiment analysis inside Django and uses PostgreSQL for dealers/reviews. The separately containerized Node/MongoDB and Flask architecture remains available and is tested by GitHub Actions via Docker Compose. The Render demonstration does not claim to run those separate services.
+
+Render Free web instances sleep after 15 minutes of inactivity; wake-up can take about a minute. Free PostgreSQL expires after 30 days and is unsuitable for permanent storage. See https://render.com/docs/free. No paid upgrade is authorized or configured.
+
 ## Required configuration
 
 Use the root Dockerfile for Django/React, `services/sentiment/Dockerfile` for Flask, and `services/dealers/Dockerfile` for Node/MongoDB. Configure the web service with:

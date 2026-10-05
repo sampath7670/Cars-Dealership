@@ -1,0 +1,5 @@
+Public copy: credentials/tokens redacted; command responses are unchanged.
+
+$ curl -b 'C:\Users\91767\AppData\Local\Temp\cars-dealership-evidence.cookies' -c 'C:\Users\91767\AppData\Local\Temp\cars-dealership-evidence.cookies' -X POST -H 'X-CSRFToken: [CSRF_TOKEN_REDACTED]' http://127.0.0.1:8000/djangoapp/logout
+
+{"status": 200, "message": "Logout successful"}

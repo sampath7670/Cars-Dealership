@@ -1,0 +1,19 @@
+$ python server/manage.py runserver 127.0.0.1:8000 --noreload
+
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 05, 2026 - 22:37:20
+Django version 5.2.17, using settings 'cars.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+[05/Oct/2026 22:37:50] "GET /static/Contact.html HTTP/1.1" 200 2377
+[05/Oct/2026 22:37:50] "GET /static/site.css HTTP/1.1" 304 0
+[05/Oct/2026 22:37:50] "GET /static/images/contact.jpg HTTP/1.1" 200 147926
+[05/Oct/2026 22:37:50] "GET /register HTTP/1.1" 200 499
+[05/Oct/2026 22:37:50] "GET /static/assets/index-mvXdJb4t.css HTTP/1.1" 304 0
+[05/Oct/2026 22:37:50] "GET /static/assets/index-PLRtSUm1.js HTTP/1.1" 304 0
+[05/Oct/2026 22:37:51] "GET /djangoapp/session HTTP/1.1" 200 33

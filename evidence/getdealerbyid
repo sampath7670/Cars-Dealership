@@ -1,0 +1,3 @@
+$ curl http://127.0.0.1:8000/djangoapp/dealer/1
+
+{"status": 200, "dealer": {"id": 1, "full_name": "Prairie Auto Kansas City", "city": "Kansas City", "address": "1200 Prairie Avenue", "state": "Kansas", "zip": "66101", "phone": "913-555-0101", "email": "kansascity@carsdealership.example"}}

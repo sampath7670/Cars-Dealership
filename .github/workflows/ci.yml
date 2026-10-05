@@ -9,6 +9,18 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci-only-postgres-password
+          POSTGRES_DB: cars_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -33,6 +45,10 @@ jobs:
           python server/manage.py check
           python server/manage.py makemigrations --check --dry-run
       - name: Test authentication, CSRF, dealers, cars and reviews
+        run: python server/manage.py test djangoapp --verbosity 2
+      - name: Verify PostgreSQL deployment compatibility
+        env:
+          DATABASE_URL: postgresql://postgres:ci-only-postgres-password@localhost:5432/cars_test
         run: python server/manage.py test djangoapp --verbosity 2
       - name: Install and check Node microservice
         working-directory: services/dealers

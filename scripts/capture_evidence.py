@@ -10,8 +10,10 @@ import tempfile
 parser = argparse.ArgumentParser()
 parser.add_argument('--base', default='http://127.0.0.1:8000')
 parser.add_argument('--username', default='sampath_demo')
-parser.add_argument('--password', default=os.getenv('DEMO_PASSWORD', 'LocalDemo-Road-2026!'))
+parser.add_argument('--password', default=os.getenv('DEMO_PASSWORD'))
 args = parser.parse_args()
+if not args.password:
+    parser.error('Set DEMO_PASSWORD or pass --password for your local test account.')
 if not args.base.startswith(('http://127.0.0.1:', 'http://localhost:')):
     parser.error('This evidence script uses a local-only demo account. Capture deployed evidence separately.')
 dest = Path(__file__).resolve().parents[1] / 'evidence'

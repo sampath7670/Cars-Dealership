@@ -1,0 +1,3 @@
+$ curl http://127.0.0.1:8000/djangoapp/get_dealers/Kansas
+
+{"status": 200, "dealers": [{"id": 1, "full_name": "Prairie Auto Kansas City", "city": "Kansas City", "address": "1200 Prairie Avenue", "state": "Kansas", "zip": "66101", "phone": "913-555-0101", "email": "kansascity@carsdealership.example"}, {"id": 2, "full_name": "Sunflower Motors Wichita", "city": "Wichita", "address": "840 Sunflower Drive", "state": "Kansas", "zip": "67202", "phone": "316-555-0102", "email": "wichita@carsdealership.example"}, {"id": 3, "full_name": "Capital Cars Topeka", "city": "Topeka", "address": "215 Capital Lane", "state": "Kansas", "zip": "66603", "phone": "785-555-0103", "email": "topeka@carsdealership.example"}]}

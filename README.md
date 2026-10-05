@@ -52,6 +52,8 @@ Then set `SENTIMENT_URL=http://127.0.0.1:5000` before starting Django (PowerShel
 
 The default local mode stores users, makes, models, dealers, and reviews in SQLite. Setting `DEALER_SERVICE_URL` switches dealer/review reads and writes to the Node/MongoDB service; users and car data remain in Django's database. Do not switch data modes expecting previously posted reviews to migrate automatically.
 
+For the selected Render demonstration deployment, `render.yaml` provisions PostgreSQL through `DATABASE_URL` and runs VADER within Django. This avoids ephemeral SQLite data loss. The Free database expires after 30 days; see `DEPLOYMENT.md` before deploying.
+
 For the complete microservices stack, create an ignored `.env` file containing a randomly generated `SERVICE_TOKEN`, then run:
 
 ```bash
