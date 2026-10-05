@@ -44,6 +44,7 @@ Local screenshots are saved as JPEG files in `evidence/`: `admin_login`, `admin_
 ## CI and deployment
 
 - Task 23: `evidence/CICD` contains logs downloaded from an actual successful GitHub Actions run, including executed steps and the run URL. `CICD` is the filename used in the attached assignment; `CI/CD` cannot be a single portable filename because `/` separates directories.
-- Tasks 24–28: Render is selected and `render.yaml` is prepared; installing/connecting Render and verifying the deployment are still pending. Do not submit localhost or GitHub source URLs as the deployment URL. See `DEPLOYMENT.md`.
+- Task 24: `evidence/deploymentURL` contains https://cars-dealership-kfvx.onrender.com.
+- Tasks 25–28: use `evidence/deployed_landingpage.jpeg`, `deployed_loggedin.jpeg`, `deployed_dealer_detail.jpeg`, and `deployed_add_review.jpeg`, respectively. These are actual screenshots of the verified Render deployment.
 
-This checklist does not claim all 28 tasks are complete: address-bar screenshots and live deployment evidence require the actions above.
+Tasks 18–20 still require the full browser-window captures described above. All other listed evidence has been captured. The free PostgreSQL database expires November 4, 2026.

@@ -3,6 +3,7 @@
 - **Repository name:** `Cars-Dealership`
 - **Project name:** `Cars Dealership — Full-Stack Capstone`
 - **Repository:** https://github.com/sampath7670/Cars-Dealership
+- **Live application:** https://cars-dealership-kfvx.onrender.com
 
 A responsive dealership directory and customer-review application built with React, Django, SQLite, a Flask/VADER sentiment service, and an optional Node.js/MongoDB dealer service. Visitors can browse eight demonstration dealerships, filter by state, inspect dealer details and reviews, and register or log in to post their own reviews.
 

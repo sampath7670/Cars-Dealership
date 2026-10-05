@@ -1,6 +1,10 @@
 # Deployment
 
-No live deployment URL is claimed until an actual hosting account is selected and a successful deployment is verified. A GitHub repository URL, localhost URL, or static frontend preview does not satisfy Tasks 24–28.
+Live application: https://cars-dealership-kfvx.onrender.com
+
+Verified on October 5, 2026: Render deployment live; health endpoint HTTP 200; dealer directory and registration working; authenticated review submitted and displayed with positive sentiment. Deployment screenshots and URL are in `evidence/`.
+
+Resources use the Free plans in Sampath's workspace, Oregon. The free PostgreSQL database expires November 4, 2026. Deployment is managed by the repository Blueprint and automatically updates from `main`.
 
 ## Selected demonstration host: Render
 

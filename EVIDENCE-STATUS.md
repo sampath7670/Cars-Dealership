@@ -10,11 +10,11 @@ The implementation and local evidence are published at https://github.com/sampat
 - Task 17: dealer directory before login.
 - Tasks 21–22: completed review form before submission and the posted review afterward.
 - Task 23: actual successful GitHub Actions logs in `evidence/CICD`, with run URL and executed steps. CI token values are redacted.
+- Tasks 24–28: verified Render deployment at https://cars-dealership-kfvx.onrender.com. Actual deployed screenshots include the landing page, logged-in username, dealer details, and successfully posted review. URL saved in `evidence/deploymentURL`.
 
-## Needs final capture or account access
+## Needs final capture
 
 - Tasks 18–20: page screenshots exist and show the correct content, but must be recaptured as full browser-window screenshots with the address bar. The native capture tool could not initialize in this session. No address bar has been fabricated or composited into the images.
-- Tasks 24–28: Render configuration is prepared. Installation/connection of Render, actual deployment, URL verification, and deployed screenshots remain outstanding. No deploymentURL file or deployed screenshots have been fabricated.
 
 ## Deployment mode
 
