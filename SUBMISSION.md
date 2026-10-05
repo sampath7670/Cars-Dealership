@@ -1,6 +1,7 @@
 # Cars Dealership assignment submission
 
-Repository: **Cars-Dealership**  
+Repository: **Cars-Dealership**
+
 Project: **Cars Dealership — Full-Stack Capstone**
 
 ## Public code links

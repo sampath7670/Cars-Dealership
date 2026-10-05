@@ -45,7 +45,7 @@ jobs:
         run: docker compose up --build -d --wait --wait-timeout 180
       - name: Verify Django with MongoDB and Flask services
         run: |
-          curl --retry 10 --retry-delay 3 --retry-connrefused --fail http://localhost:8000/health
+          curl --retry 10 --retry-delay 3 --retry-all-errors --fail http://localhost:8000/health
           curl --fail http://localhost:8000/djangoapp/get_dealers/Kansas
           curl --fail http://localhost:8000/djangoapp/reviews/dealer/1
           curl --fail http://localhost:8000/djangoapp/analyze/Fantastic%20services

@@ -9,6 +9,12 @@ services:
       SENTIMENT_URL: http://sentiment:5000
       SERVICE_TOKEN: ${SERVICE_TOKEN:?Set SERVICE_TOKEN in .env}
     volumes: [django-data:/data]
+    healthcheck:
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      start_period: 10s
+      retries: 20
     depends_on:
       dealers: {condition: service_healthy}
       sentiment: {condition: service_healthy}
