@@ -1,4 +1,8 @@
-# Cars Dealership assignment submission
+# Historical Cars Dealership assignment submission
+
+> Archived evidence for the earlier Django-based assignment version. The paths,
+> endpoints, deployment URL, and screenshots below do not describe the current
+> MongoDB/Express/React/Node implementation. Use `README.md` for current setup.
 
 Repository: **Cars-Dealership**
 

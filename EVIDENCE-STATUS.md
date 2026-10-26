@@ -1,4 +1,8 @@
-# Evidence status
+# Historical evidence status
+
+> This records verification of the earlier Django-based version. Its deployment,
+> API transcripts, and screenshots do not verify the current MERN implementation.
+> See `README.md` for current run and verification commands.
 
 The implementation and local evidence are published at https://github.com/sampath7670/Cars-Dealership.
 

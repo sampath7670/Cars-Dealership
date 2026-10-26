@@ -1,77 +1,67 @@
 name: Cars Dealership CI
+
 on:
   push:
-    paths-ignore: ['evidence/**', '**/*.md']
+    paths-ignore:
+      - 'evidence/**'
+      - '**/*.md'
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: ci-only-postgres-password
-          POSTGRES_DB: cars_test
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - name: Check out source
         uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
+
+      - name: Install API dependencies
+        working-directory: services/dealers
+        run: npm ci
+
+      - name: Check and test API
+        working-directory: services/dealers
+        run: npm run check
+
       - name: Install React dependencies
         working-directory: server/frontend
         run: npm ci
-      - name: Build React frontend
+
+      - name: Build React
         working-directory: server/frontend
         run: npm run build
-      - name: Check Django and migrations
-        run: |
-          python server/manage.py check
-          python server/manage.py makemigrations --check --dry-run
-      - name: Test authentication, CSRF, dealers, cars and reviews
-        run: python server/manage.py test djangoapp --verbosity 2
-      - name: Verify PostgreSQL deployment compatibility
-        env:
-          DATABASE_URL: postgresql://postgres:ci-only-postgres-password@localhost:5432/cars_test
-        run: python server/manage.py test djangoapp --verbosity 2
-      - name: Install and check Node microservice
-        working-directory: services/dealers
-        run: |
-          npm ci
-          npm run check
-      - name: Build and start container stack
-        env:
-          SERVICE_TOKEN: ci-only-service-token-no-production-access
+
+      - name: Build and start MongoDB and app
         run: docker compose up --build -d --wait --wait-timeout 180
-      - name: Verify Django with MongoDB and Flask services
+
+      - name: Smoke test running application
         run: |
-          curl --retry 10 --retry-delay 3 --retry-all-errors --fail http://localhost:8000/health
-          curl --fail http://localhost:8000/djangoapp/get_dealers/Kansas
-          curl --fail http://localhost:8000/djangoapp/reviews/dealer/1
-          curl --fail http://localhost:8000/djangoapp/analyze/Fantastic%20services
+          set -euo pipefail
+          curl --retry 10 --retry-delay 3 --retry-all-errors --fail http://localhost:3000/health
+          curl --fail http://localhost:3000/api/get_dealers
+          curl --fail http://localhost:3000/api/get_cars
+          username="ci_$(date +%s)"
+          curl --fail --silent --show-error -c /tmp/cars-cookies \
+            -H 'Content-Type: application/json' \
+            -d "{\"username\":\"$username\",\"first_name\":\"CI\",\"last_name\":\"Tester\",\"email\":\"$username@example.com\",\"password\":\"CI-only-password-123\"}" \
+            http://localhost:3000/api/register
+          curl --fail --silent --show-error -b /tmp/cars-cookies \
+            -H 'Content-Type: application/json' \
+            -d '{"dealer_id":1,"review":"Great service and a clear explanation.","rating":5,"purchase":false}' \
+            http://localhost:3000/api/add_review
+
       - name: Collect container logs
         if: always()
-        env:
-          SERVICE_TOKEN: ci-only-service-token-no-production-access
         run: docker compose logs --no-color
+
       - name: Stop containers
         if: always()
-        env:
-          SERVICE_TOKEN: ci-only-service-token-no-production-access
-        run: docker compose down
+        run: docker compose down -v

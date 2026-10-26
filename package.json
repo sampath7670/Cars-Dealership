@@ -1,0 +1,17 @@
+{
+  "name": "cars-dealership",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "npm ci --prefix services/dealers && npm ci --prefix server/frontend",
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build --prefix server/frontend",
+    "start": "npm start --prefix services/dealers",
+    "test": "npm test --prefix services/dealers",
+    "check": "npm run check --prefix services/dealers && npm run build --prefix server/frontend"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

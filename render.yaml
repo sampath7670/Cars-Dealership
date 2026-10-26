@@ -1,26 +1,18 @@
-# Free demonstration deployment. Free Render Postgres expires after 30 days.
-# Runs Django/React with in-process VADER and Postgres-backed dealer/review data.
-# The separate Node/MongoDB and Flask stack is defined in compose.yaml.
+# Connect a MongoDB deployment before creating this Blueprint. Render does not
+# provision MongoDB from this file; set MONGO_URL in the Render dashboard.
 services:
   - type: web
     name: cars-dealership
     runtime: docker
     plan: free
-    region: oregon
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
-      - key: DJANGO_DEBUG
-        value: '0'
-      - key: DJANGO_SECRET_KEY
-        generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: cars-dealership-db
-          property: connectionString
-databases:
-  - name: cars-dealership-db
-    plan: free
-    region: oregon
-    databaseName: cars_dealership
-    user: cars_dealership
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: 'true'
+      - key: COOKIE_SECURE
+        value: 'true'
+      - key: MONGO_URL
+        sync: false

@@ -1,51 +1,37 @@
 # Deployment
 
-Live application: https://cars-dealership-kfvx.onrender.com
+The current app is a single Node.js and Express service that serves the built React frontend and stores its data in MongoDB. No Python service or relational database is needed.
 
-Verified on October 5, 2026: Render deployment live; health endpoint HTTP 200; dealer directory and registration working; authenticated review submitted and displayed with positive sentiment. Deployment screenshots and URL are in `evidence/`.
+## Local containers
 
-Resources use the Free plans in Sampath's workspace, Oregon. The free PostgreSQL database expires November 4, 2026. Deployment is managed by the repository Blueprint and automatically updates from `main`.
+```bash
+docker compose up --build
+```
 
-## Selected demonstration host: Render
+Open <http://localhost:3000>. Compose builds the frontend and API into one image, starts MongoDB 7, waits for its health check, and stores database files in the `mongo-data` volume. Port 27017 is published only on the local loopback interface so a locally run development server can connect to the same database. Use `docker compose down` to stop the containers while keeping data.
 
-`render.yaml` defines a free Docker web service and free PostgreSQL database. Install/connect Render or sign in at https://dashboard.render.com, create a Blueprint from this repository, and review the two Free plans before deploying. The root Dockerfile builds React and serves it through Django/Gunicorn/WhiteNoise. `DATABASE_URL` selects PostgreSQL, and `RENDER_EXTERNAL_HOSTNAME` configures Django's allowed host and trusted HTTPS origin automatically.
+## Production configuration
 
-This economical deployment runs sentiment analysis inside Django and uses PostgreSQL for dealers/reviews. The separately containerized Node/MongoDB and Flask architecture remains available and is tested by GitHub Actions via Docker Compose. The Render demonstration does not claim to run those separate services.
+Set `MONGO_URL` to a reachable MongoDB connection string. Keep credentials in your hosting provider's secret settings, not in Git. The connection must allow the deployed service's network access. Set `NODE_ENV=production`. The app listens on `PORT` (default 3000) and exposes `/health` for readiness checks. Use HTTPS and set `COOKIE_SECURE=true` so session cookies require it. Set `TRUST_PROXY=true` when Express runs behind one trusted reverse proxy.
 
-Render Free web instances sleep after 15 minutes of inactivity; wake-up can take about a minute. Free PostgreSQL expires after 30 days and is unsuitable for permanent storage. See https://render.com/docs/free. No paid upgrade is authorized or configured.
+The image builds React with Vite and runs `node services/dealers/index.js`. On startup, the API connects to MongoDB, creates its indexes, and inserts demonstration data only where it is absent. Existing users and reviews remain in MongoDB across app restarts.
 
-## Required configuration
+## Render blueprint
 
-Use the root Dockerfile for Django/React, `services/sentiment/Dockerfile` for Flask, and `services/dealers/Dockerfile` for Node/MongoDB. Configure the web service with:
+`render.yaml` defines one Docker web service. It prompts for `MONGO_URL` when you create the Blueprint. Provide an external MongoDB database before deploying; the Blueprint does not create a database. Configure the database to accept the Render service's connections, then deploy and check `/health` and the dealership list. The Blueprint sets `NODE_ENV=production`; Render supplies `PORT`.
 
-- `DJANGO_DEBUG=0`
-- `DJANGO_SECRET_KEY`: a private, random secret (never commit it).
-- `DJANGO_ALLOWED_HOSTS`: the deployment hostname, without scheme.
-- `CSRF_TRUSTED_ORIGINS`: the complete HTTPS origin.
-- `SENTIMENT_URL`: the deployed Flask service URL.
-- `DEALER_SERVICE_URL`: the deployed Node service URL.
-- `SERVICE_TOKEN`: the same private random token configured on the Node service.
-- `DATABASE_PATH`: a SQLite path on persistent storage.
-- Node service `MONGO_URL`: a private MongoDB connection string; keep it out of source control.
+The URL and screenshots under `evidence/` belong to the previous Django and PostgreSQL deployment. They do not demonstrate a running deployment of this MERN code. Verify a new deployment and record its URL separately before presenting it as live.
 
-The web image uses Gunicorn and WhiteNoise, runs migrations, and idempotently seeds demonstration data. Set the platform port to 8000 (or set `PORT`). A health probe can request `/health`.
+## Verification
 
-## Persistence matters
+```bash
+npm run setup
+npm test
+npm run build
+docker compose up --build -d --wait
+curl http://localhost:3000/health
+curl http://localhost:3000/api/get_dealers
+docker compose down
+```
 
-Container filesystems are commonly ephemeral. Do not deploy SQLite to ephemeral storage and claim durable accounts or car data. Use a persistent volume and one web replica, or replace the database configuration with a managed relational database before scaling. MongoDB also needs persistent storage. Keep MongoDB and internal service endpoints private wherever the platform supports it.
-
-## IBM Cloud Code Engine
-
-Use your course lab or IBM Cloud account to build/deploy the three service images and provision MongoDB. Configure service URLs and secrets through the platform. Confirm the account's storage options for Django; if persistent SQLite storage is unavailable, use a managed PostgreSQL database with the appropriate Django driver/settings. These account-specific resources must be provisioned before a working deployment can be verified.
-
-## Capture the deployed evidence
-
-After the real HTTPS application is reachable:
-
-1. Save its actual URL to `evidence/deploymentURL`.
-2. Capture `deployed_landingpage.jpeg` while logged out.
-3. Register or log in using a demonstration account, then capture `deployed_loggedin.jpeg` with the username visible.
-4. Open a dealer and capture `deployed_dealer_detail.jpeg`.
-5. Post a genuine test review and capture `deployed_add_review.jpeg`.
-
-Never substitute local screenshots for deployed screenshots. Keep real credentials out of screenshots and GitHub.
+The GitHub Actions workflow runs the Node tests, builds React, starts Compose, and checks the live API.

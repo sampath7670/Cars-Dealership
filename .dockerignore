@@ -1,7 +1,6 @@
 .git
 **/node_modules
-**/__pycache__
-**/*.sqlite3
+**/dist
 .env
 evidence
-server/staticfiles
+*.log
